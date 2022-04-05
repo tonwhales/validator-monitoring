@@ -13,4 +13,5 @@ chmod -R o+r /var/ton-work/db/files/packages/
 chmod o+x /var/ton-work/db/files/packages/temp.archive.*.index
 wget -O /etc/datadog-agent/conf.d/directory.d/conf.yaml https://raw.githubusercontent.com/tonwhales/validator-monitoring/main/directory_conf.yaml
 #cp directory_conf.yaml /etc/datadog-agent/conf.d/directory.d/conf.yaml
+sed -i 's@# process_config@process_config\n  enabled: "true"@g' /etc/datadog-agent/datadog.yaml
 systemctl restart datadog-agent
