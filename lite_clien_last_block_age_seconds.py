@@ -23,7 +23,7 @@ class HelloCheck(AgentCheck):
         output = error = exit_code = None
         try:
             process = subprocess.Popen(
-                    ['/usr/bin/ton/lite-client/lite-client', '-C', '/usr/bin/ton/global.config.json', '-c', 'last'],
+                    ['/usr/bin/ton/lite-client/lite-client', '-C', '/usr/bin/ton/local.config.json', '-c', 'last'],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                     encoding='utf8'
