@@ -1,4 +1,8 @@
 import os
+import sys
+sys.path.append("/usr/src/mytonctrl")
+import mytoncore
+
 
 # the following try/except block will make the custom check compatible with any Agent version
 try:
@@ -39,4 +43,8 @@ def du(path):
 
 class HelloCheck(AgentCheck):
     def check(self, instance):
-        self.gauge('var.ton.work.db.files.packages.size.bytes', du("/var/ton-work/db/files/packages/"), tags=['SERVICE:dir-size'] + self.instance.get('tags', []))
+        # du func is the correct way to calculate size of database (real size instead of apparent size)
+        # but because validator-engine creates new files in db dir,
+        # we cannot pre-grant permissions for reading sizes, this is not an option
+        toncore = mytoncore.MyTonCore()
+        self.gauge('var.ton.work.db.files.packages.size.bytes', int(toncore.GetDbSize() * (1 << 30)), tags=['SERVICE:dir-size'] + self.instance.get('tags', []))
