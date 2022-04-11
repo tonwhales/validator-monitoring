@@ -21,6 +21,7 @@ wget -O /etc/datadog-agent/checks.d/lite_clien_last_block_age_seconds.py $REPO_P
 #cp directory_conf.yaml /etc/datadog-agent/conf.d/directory.d/conf.yaml
 sed -i 's@# process_config@process_config:\n  enabled: "true"@g' /etc/datadog-agent/datadog.yaml
 sed -i 's@^process_config$@process_config:@g' /etc/datadog-agent/datadog.yaml
+sed -i 's@enabled: "true":$@enabled: "true"@g' /etc/datadog-agent/datadog.yaml
 
 mkdir /usr/src/validator-monitoring
 wget -O /usr/src/validator-monitoring/ton_db_size.py $REPO_PREFIX/ton_db_size.py
