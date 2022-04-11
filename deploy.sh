@@ -19,7 +19,9 @@ wget -O /etc/datadog-agent/checks.d/lite_clien_last_block_age_seconds.py $REPO_P
 #chmod o+x /var/ton-work/db/files/packages/temp.archive.*.index
 #wget -O /etc/datadog-agent/conf.d/directory.d/conf.yaml https://raw.githubusercontent.com/tonwhales/validator-monitoring/main/directory_conf.yaml
 #cp directory_conf.yaml /etc/datadog-agent/conf.d/directory.d/conf.yaml
-sed -i 's@# process_config@process_config\n  enabled: "true"@g' /etc/datadog-agent/datadog.yaml
+sed -i 's@# process_config@process_config:\n  enabled: "true"@g' /etc/datadog-agent/datadog.yaml
+sed -i 's@^process_config$@process_config:@g' /etc/datadog-agent/datadog.yaml
+
 mkdir /usr/src/validator-monitoring
 wget -O /usr/src/validator-monitoring/ton_db_size.py $REPO_PREFIX/ton_db_size.py
 wget -O /etc/systemd/system/ton-db-size.service $REPO_PREFIX/ton-db-size.service
