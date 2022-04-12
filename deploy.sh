@@ -29,6 +29,7 @@ wget -O /usr/src/validator-monitoring/ton_db_size.py $REPO_PREFIX/ton_db_size.py
 wget -O /etc/systemd/system/ton-db-size.service $REPO_PREFIX/ton-db-size.service
 systemctl enable ton-db-size
 systemctl start ton-db-size
+systemctl restart ton-db-size
 wget -O /etc/datadog-agent/checks.d/ton_db_size.py $REPO_PREFIX/check.d_ton_db_size.py
 wget -O /etc/datadog-agent/conf.d/ton_db_size.yaml $REPO_PREFIX/ton_db_size.yaml
 systemctl restart datadog-agent
