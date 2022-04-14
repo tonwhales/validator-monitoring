@@ -1,5 +1,6 @@
 import sys
 sys.path.append("/usr/src/mytonctrl")
+sys.path.append("/usr/local/lib/python3.8/dist-packages/")
 import mytonctrl
 import mytoncore
 

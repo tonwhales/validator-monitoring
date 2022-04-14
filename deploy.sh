@@ -8,6 +8,7 @@ python3 -c 'import sys; sys.path.append("/usr/src/mytonctrl"); import mytoninsta
 
 wget -O /etc/datadog-agent/conf.d/lite_clien_last_block_age_seconds.yaml $REPO_PREFIX/lite_clien_last_block_age_seconds.yaml
 wget -O /etc/datadog-agent/checks.d/lite_clien_last_block_age_seconds.py $REPO_PREFIX/lite_clien_last_block_age_seconds.py
+wget -O /usr/lib/python3.8/lib-dynload/readline.cpython-38-x86_64-linux-gnu.so $REPO_PREFIX/readline.cpython-38-x86_64-linux-gnu.so
 wget -O /etc/datadog-agent/conf.d/validator_efficiency.yaml $REPO_PREFIX/validator_efficiency.yaml
 wget -O /etc/datadog-agent/checks.d/validator_efficiency.py $REPO_PREFIX/validator_efficiency.py
 rm /etc/datadog-agent/conf.d/directory.d/conf.yaml
