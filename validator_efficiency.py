@@ -17,7 +17,7 @@ __version__ = "1.0.0"
 
 class ValidatorEfficiencyCheck(AgentCheck):
     def send_gauge(self, value):
-         self.gauge('ton.validator.efficiency', value, tags=['SERVICE:validator-efficiency'] + self.instance.get('tags', []))
+         self.gauge('ton.validator.efficiency', value, tags=['SERVICE:ton'] + self.instance.get('tags', []))
 
 
     def check(self, instance):

@@ -17,4 +17,4 @@ class DbSizeCheck(AgentCheck):
         s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         s.connect(UNIX_SOCKET_PATH)
         db_size_str = s.recv(1024).decode('utf8')
-        self.gauge('ton.db.size', int(db_size_str), tags=['SERVICE:dir-size'] + self.instance.get('tags', []))
+        self.gauge('ton.db.size', int(db_size_str), tags=['SERVICE:ton'] + self.instance.get('tags', []))

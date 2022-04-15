@@ -47,4 +47,4 @@ class HelloCheck(AgentCheck):
         # but because validator-engine creates new files in db dir,
         # we cannot pre-grant permissions for reading sizes, this is not an option
         toncore = mytoncore.MyTonCore()
-        self.gauge('var.ton.work.db.files.packages.size.bytes', int(toncore.GetDbSize() * (1 << 30)), tags=['SERVICE:dir-size'] + self.instance.get('tags', []))
+        self.gauge('var.ton.work.db.files.packages.size.bytes', int(toncore.GetDbSize() * (1 << 30)), tags=['SERVICE:ton'] + self.instance.get('tags', []))

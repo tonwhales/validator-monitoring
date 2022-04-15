@@ -16,7 +16,7 @@ UNIX_TIME_RE = re.compile('(?:' + TRIVIAL_HEALTH_IDENTIFICATIOPN_STRING + ' .*cr
 
 class HelloCheck(AgentCheck):
     def send_gauge(self, value: int):
-         self.gauge('lite.client.last.block.age.seconds', int(value), tags=['SERVICE:lite-clien'] + self.instance.get('tags', []))
+         self.gauge('lite.client.last.block.age.seconds', int(value), tags=['SERVICE:ton'] + self.instance.get('tags', []))
 
 
     def get_replication_lag(self):
