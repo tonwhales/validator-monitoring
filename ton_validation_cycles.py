@@ -20,7 +20,7 @@ __version__ = "1.0.0"
 
 class ValidatorEfficiencyCheck(AgentCheck):
     def send_count(self, value):
-         self.count('ton.validator.efficiency', value, tags=['SERVICE:ton'] + self.instance.get('tags', []))
+         self.count('ton.validator.cycles', value, tags=['SERVICE:ton'] + self.instance.get('tags', []))
 
     def check(self, instance):
         mytoncore.local.buffer["localdbFileName"] = "/usr/local/bin/mytoncore/mytoncore.db"
