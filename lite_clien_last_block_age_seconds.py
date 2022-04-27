@@ -18,7 +18,7 @@ __version__ = "1.0.0"
 TRIVIAL_HEALTH_IDENTIFICATIOPN_STRING = 'latest masterchain block known to server is'
 UNIX_TIME_RE = re.compile('(?:' + TRIVIAL_HEALTH_IDENTIFICATIOPN_STRING + ' .*created at )(\d{10})')
 
-class HelloCheck(AgentCheck, EnvEnrichedConsumer):
+class ReplicationLagCheck(AgentCheck, EnvEnrichedConsumer):
     def send_gauge(self, value: int):
         self.send_gauge_with_env_tag('lite.client.last.block.age.seconds', int(value))
 

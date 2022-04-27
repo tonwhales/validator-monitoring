@@ -1,4 +1,7 @@
 import socket
+import sys
+sys.path.append("/usr/src/validator-monitoring")
+from common import EnvEnrichedConsumer
 
 # the following try/except block will make the custom check compatible with any Agent version
 try:
@@ -12,9 +15,9 @@ except ImportError:
 __version__ = "1.0.0"
 UNIX_SOCKET_PATH = "/var/tmp/ton_db_size.sock"
 
-class DbSizeCheck(AgentCheck):
+class DbSizeCheck(AgentCheck, EnvEnrichedConsumer):
     def check(self, instance):
         s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         s.connect(UNIX_SOCKET_PATH)
         db_size_str = s.recv(1024).decode('utf8')
-        self.gauge('ton.db.size', int(db_size_str), tags=['SERVICE:ton'] + self.instance.get('tags', []))
+        self.send_gauge_with_env_tag('ton.db.size', int(db_size_str))
