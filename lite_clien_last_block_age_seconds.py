@@ -1,6 +1,10 @@
 import subprocess
 import re
 import datetime
+import sys
+sys.path.append("/usr/src/validator-monitoring")
+from common import EnvEnrichedConsumer
+
 # the following try/except block will make the custom check compatible with any Agent version
 try:
     # first, try to import the base class from new versions of the Agent...
@@ -14,9 +18,9 @@ __version__ = "1.0.0"
 TRIVIAL_HEALTH_IDENTIFICATIOPN_STRING = 'latest masterchain block known to server is'
 UNIX_TIME_RE = re.compile('(?:' + TRIVIAL_HEALTH_IDENTIFICATIOPN_STRING + ' .*created at )(\d{10})')
 
-class HelloCheck(AgentCheck):
+class HelloCheck(AgentCheck, EnvEnrichedConsumer):
     def send_gauge(self, value: int):
-         self.gauge('lite.client.last.block.age.seconds', int(value), tags=['SERVICE:ton'] + self.instance.get('tags', []))
+        self.send_gauge_with_env_tag('lite.client.last.block.age.seconds', int(value))
 
 
     def get_replication_lag(self):
@@ -27,7 +31,7 @@ class HelloCheck(AgentCheck):
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
                     encoding='utf8'
-            );
+            )
             # huge timeout is for case of very high CPU load
             output,error = process.communicate(timeout=2)
             exit_code = process.wait(timeout=2)

@@ -4,6 +4,8 @@ REPO_PREFIX=https://raw.githubusercontent.com/tonwhales/validator-monitoring/mai
 
 # we need 1c78056a4249672a8e9eb0548c79e02d3ce19d5e
 pushd /usr/src/mytonctrl; git pull origin master; popd
+mkdir /usr/src/validator-monitoring/
+wget -O /usr/src/validator-monitoring/common.py $REPO_PREFIX/common.py
 python3 -c 'import sys; sys.path.append("/usr/src/mytonctrl"); import mytoninstaller; mytoninstaller.Init(); mytoninstaller.CreateLocalConfig(mytoninstaller.GetInitBlock(), localConfigPath="/usr/src/validator-monitoring/local.config.json")'
 
 wget -O /etc/datadog-agent/conf.d/lite_clien_last_block_age_seconds.yaml $REPO_PREFIX/lite_clien_last_block_age_seconds.yaml
