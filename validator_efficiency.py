@@ -1,6 +1,8 @@
 import sys
 sys.path.append("/usr/src/mytonctrl")
 sys.path.append("/usr/local/lib/python3.8/dist-packages/")
+sys.path.append("/usr/src/validator-monitoring")
+from common import EnvEnrichedConsumer
 import mytonctrl
 import mytoncore
 
@@ -15,9 +17,9 @@ except ImportError:
 # content of the special variable __version__ will be shown in the Agent status page
 __version__ = "1.0.0"
 
-class ValidatorEfficiencyCheck(AgentCheck):
+class ValidatorEfficiencyCheck(AgentCheck, EnvEnrichedConsumer):
     def send_gauge(self, value):
-         self.gauge('ton.validator.efficiency', value, tags=['SERVICE:ton'] + self.instance.get('tags', []))
+        self.send_gauge_with_env_tag('ton.validator.efficiency', value)
 
 
     def check(self, instance):

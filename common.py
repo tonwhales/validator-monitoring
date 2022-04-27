@@ -21,3 +21,7 @@ class EnvEnrichedConsumer():
 
     def send_gauge_with_env_tag(self, name: str, value):
         self.gauge(name, value, tags=self.get_tags())
+    
+
+    def send_count_with_env_tag(self, name: str, value):
+        self.count(name, value, tags=self.get_tags())
