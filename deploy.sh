@@ -16,6 +16,8 @@ wget -O /etc/datadog-agent/checks.d/validator_efficiency.py $REPO_PREFIX/validat
 wget -O /etc/datadog-agent/conf.d/ton_validation_cycles.yaml $REPO_PREFIX/ton_validation_cycles.yaml
 wget -O /etc/datadog-agent/checks.d/ton_validation_cycles.py $REPO_PREFIX/ton_validation_cycles.py
 rm /etc/datadog-agent/conf.d/directory.d/conf.yaml
+rm /etc/datadog-agent/conf.d/var_ton_work_db_files_packages_size.yaml
+rm /etc/datadog-agent/checks.d/var_ton_work_db_files_packages_size.py
 sed -i 's@# process_config@process_config:\n  enabled: "true"@g' /etc/datadog-agent/datadog.yaml
 sed -i 's@^process_config$@process_config:@g' /etc/datadog-agent/datadog.yaml
 sed -i 's@enabled: "true":$@enabled: "true"@g' /etc/datadog-agent/datadog.yaml
