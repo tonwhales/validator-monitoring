@@ -13,6 +13,9 @@ class EnvEnrichedConsumer():
             root_hash = config["validator"]["zero_state"]["root_hash"]
             return ROOT_HASH_TO_ENV.get(root_hash, "env_not_known")
 
+    
+    def get_plain_tags(self):
+        return ['SERVICE:ton'] + self.instance.get('tags', [])
 
     def get_tags(self):
         tags = ['SERVICE:ton', 'ENVIRONMENT:{}'.format(self.get_environment())]

@@ -20,4 +20,4 @@ class DbSizeCheck(AgentCheck, EnvEnrichedConsumer):
         s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         s.connect(UNIX_SOCKET_PATH)
         db_size_str = s.recv(1024).decode('utf8')
-        self.send_gauge_with_env_tag('ton.db.size', int(db_size_str))
+        self.gauge('ton.db.size', int(db_size_str), tags=self.get_plain_tags())

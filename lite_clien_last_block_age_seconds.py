@@ -20,7 +20,7 @@ UNIX_TIME_RE = re.compile('(?:' + TRIVIAL_HEALTH_IDENTIFICATIOPN_STRING + ' .*cr
 
 class ReplicationLagCheck(AgentCheck, EnvEnrichedConsumer):
     def send_gauge(self, value: int):
-        self.send_gauge_with_env_tag('lite.client.last.block.age.seconds', int(value))
+        self.gauge('lite.client.last.block.age.seconds', int(value), tags=self.get_plain_tags())
 
 
     def get_replication_lag(self):

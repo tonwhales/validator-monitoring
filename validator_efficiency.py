@@ -19,7 +19,7 @@ __version__ = "1.0.0"
 
 class ValidatorEfficiencyCheck(AgentCheck, EnvEnrichedConsumer):
     def send_gauge(self, value):
-        self.send_gauge_with_env_tag('ton.validator.efficiency', value)
+        self.gauge('ton.validator.efficiency', value, tags=self.get_plain_tags())
 
 
     def check(self, instance):

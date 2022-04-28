@@ -22,7 +22,7 @@ __version__ = "1.0.0"
 
 class ValidatorCyclesCheck(AgentCheck, EnvEnrichedConsumer):
     def send_count(self, value):
-         self.send_count_with_env_tag('ton.validator.cycles', value)
+        self.count('ton.validator.cycles', value, tags=self.get_plain_tags())
 
     def check(self, instance):
         mytoncore.local.buffer["localdbFileName"] = "/usr/local/bin/mytoncore/mytoncore.db"
