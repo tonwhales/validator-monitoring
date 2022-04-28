@@ -27,6 +27,7 @@ wget -O /etc/datadog-agent/conf.d/lite_clien_last_block_age_seconds.yaml $REPO_P
 wget -O /etc/datadog-agent/checks.d/lite_clien_last_block_age_seconds.py $REPO_PREFIX/lite_clien_last_block_age_seconds.py
 
 if [ "$ARCHIVE_NODE" == "YES" ]; then
+    sed -i "s@# logs_enabled: false@logs_enabled: true@g" /etc/datadog-agent/datadog.yaml
     wget -O /etc/datadog-agent/conf.d/nginx.d/conf.yaml $REPO_PREFIX/conf.d_nginx.d_conf.yaml
     ROLE="archive"
 else
