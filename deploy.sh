@@ -1,9 +1,28 @@
 #!/bin/bash
 
+# call example: curl https://raw.githubusercontent.com/tonwhales/validator-monitoring/main/deploy.sh | bash -x -- --role validator
+
+containsElement () {
+  local e match="$1"
+  shift
+  for e; do [[ "$e" == "$match" ]] && return 0; done
+  return 1
+}
+
+declare -A ROLES
+ROLES[validator]="validator"
+ROLES[archive]="archive"
+
+
 while [[ $# -gt 0 ]]; do
   case $1 in
-    --archive-node)
-      ARCHIVE_NODE=YES
+    --role)
+      if [ ! containsElement "$2" "${ROLES[@]}" ]; then
+          echo "Cannot proceed without knowing role."
+          exit 1
+      fi
+      ROLE="$2"
+      shift
       shift
       ;;
     -*|--*)
@@ -21,22 +40,19 @@ mkdir /usr/src/validator-monitoring/
 wget -O /usr/src/validator-monitoring/common.py $REPO_PREFIX/common.py
 python3 -c 'import sys; sys.path.append("/usr/src/mytonctrl"); import mytoninstaller; mytoninstaller.Init(); mytoninstaller.CreateLocalConfig(mytoninstaller.GetInitBlock(), localConfigPath="/usr/src/validator-monitoring/local.config.json")'
 ENVIRONMENT=$(python3 -c 'import sys; sys.path.append("/usr/src/validator-monitoring"); import common; print(common.EnvEnrichedConsumer().get_environment())')
-ROLE="undefined"
 
 wget -O /etc/datadog-agent/conf.d/lite_clien_last_block_age_seconds.yaml $REPO_PREFIX/lite_clien_last_block_age_seconds.yaml
 wget -O /etc/datadog-agent/checks.d/lite_clien_last_block_age_seconds.py $REPO_PREFIX/lite_clien_last_block_age_seconds.py
 
-if [ "$ARCHIVE_NODE" == "YES" ]; then
-    sed -i "s@# logs_enabled: false@logs_enabled: true@g" /etc/datadog-agent/datadog.yaml
-    wget -O /etc/datadog-agent/conf.d/nginx.d/conf.yaml $REPO_PREFIX/conf.d_nginx.d_conf.yaml
-    ROLE="archive"
-else
+# nginx logs collection example
+# sed -i "s@# logs_enabled: false@logs_enabled: true@g" /etc/datadog-agent/datadog.yaml
+# wget -O /etc/datadog-agent/conf.d/nginx.d/conf.yaml $REPO_PREFIX/conf.d_nginx.d_conf.yaml
+if [ "$ROLE" == ${ROLES[validator]} ]; then
     wget -O /opt/datadog-agent/embedded/lib/python3.8/lib-dynload/readline.cpython-38-x86_64-linux-gnu.so $REPO_PREFIX/readline.cpython-38-x86_64-linux-gnu.so
     wget -O /etc/datadog-agent/conf.d/validator_efficiency.yaml $REPO_PREFIX/validator_efficiency.yaml
     wget -O /etc/datadog-agent/checks.d/validator_efficiency.py $REPO_PREFIX/validator_efficiency.py
     wget -O /etc/datadog-agent/conf.d/ton_validation_cycles.yaml $REPO_PREFIX/ton_validation_cycles.yaml
     wget -O /etc/datadog-agent/checks.d/ton_validation_cycles.py $REPO_PREFIX/ton_validation_cycles.py
-    ROLE="validator"
 fi
 rm /etc/datadog-agent/conf.d/directory.d/conf.yaml
 rm /etc/datadog-agent/conf.d/var_ton_work_db_files_packages_size.yaml
