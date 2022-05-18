@@ -21,6 +21,7 @@ service_exists() {
 declare -A ROLES
 ROLES[validator]="validator"
 ROLES[archive]="archive"
+ROLES[dev]="dev"
 
 
 while [[ $# -gt 0 ]]; do
