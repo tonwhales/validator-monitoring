@@ -1,0 +1,5 @@
+ETCD_URL=http://etcd.whalescorp.com:2379/
+PORT=__PLACE_PORT_HERE__
+SERVICE=validator
+TTL=3600
+INFO='{"environment": "__PLACE_ENV_HERE__"}'

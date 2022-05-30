@@ -68,6 +68,19 @@ if [ "$ROLE" == ${ROLES[validator]} ]; then
     wget -O /etc/datadog-agent/checks.d/validator_efficiency.py $REPO_PREFIX/validator_efficiency.py
     wget -O /etc/datadog-agent/conf.d/ton_validation_cycles.yaml $REPO_PREFIX/ton_validation_cycles.yaml
     wget -O /etc/datadog-agent/checks.d/ton_validation_cycles.py $REPO_PREFIX/ton_validation_cycles.py
+    mkdir -p /etc/etcd-registrar/
+    apt -y install jq
+    PORT=$(jq ".control | .[].port" /var/ton-work/db/config.json)
+    sed -i "s@__PLACE_PORT_HERE__@$PORT@g" /etc/etcd-registrar/config.values
+    sed -i "s@__PLACE_ENV_HERE__@$ENVIRONMENT@g" /etc/etcd-registrar/config.values
+    if [ ! -f /etc/etcd-registrar/config.secrets ]; then
+        echo "PLEASE, DEPLOY SECRETS FIRST!"
+        exit 1
+    fi
+    apt install -y software-properties-common
+    add-apt-repository --yes ppa:yma-het/etcd-client
+    apt install -y etcd-registrar
+
 fi
 rm /etc/datadog-agent/conf.d/directory.d/conf.yaml
 rm /etc/datadog-agent/conf.d/var_ton_work_db_files_packages_size.yaml
