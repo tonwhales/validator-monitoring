@@ -68,6 +68,7 @@ if [ "$ROLE" == ${ROLES[validator]} ]; then
     wget -O /etc/datadog-agent/checks.d/validator_efficiency.py $REPO_PREFIX/validator_efficiency.py
     wget -O /etc/datadog-agent/conf.d/ton_validation_cycles.yaml $REPO_PREFIX/ton_validation_cycles.yaml
     wget -O /etc/datadog-agent/checks.d/ton_validation_cycles.py $REPO_PREFIX/ton_validation_cycles.py
+    wget -O /etc/datadog-agent/checks.d/config.values $REPO_PREFIX/config.values
     mkdir -p /etc/etcd-registrar/
     apt -y install jq
     PORT=$(jq ".control | .[].port" /var/ton-work/db/config.json)
