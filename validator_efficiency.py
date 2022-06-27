@@ -18,8 +18,8 @@ except ImportError:
 __version__ = "1.0.0"
 
 class ValidatorEfficiencyCheck(AgentCheck, EnvEnrichedConsumer):
-    def send_gauge(self, value):
-        self.gauge('ton.validator.efficiency', value, tags=self.get_plain_tags())
+    def send_gauge(self, name, value):
+        self.gauge(name, value, tags=self.get_plain_tags())
 
 
     def check(self, instance):
@@ -28,6 +28,7 @@ class ValidatorEfficiencyCheck(AgentCheck, EnvEnrichedConsumer):
         toncore.liteClient.configPath = "/usr/src/validator-monitoring/local.config.json"
         mytoncore.local.db["liteServers"] = [0]
         if len(list(filter(lambda v: v["adnlAddr"] == toncore.adnlAddr, toncore.GetConfig34()["validators"]))) != 0:
-            self.send_gauge(toncore.GetValidatorEfficiency(adnlAddr=toncore.adnlAddr))
+            self.send_gauge('ton.validator.efficiency', toncore.GetValidatorEfficiency(adnlAddr=toncore.adnlAddr))
+            self.send_gauge('ton.validator.index', toncore.GetValidatorIndex(adnlAddr=toncore.adnlAddr))
         else:
             self.send_gauge(100.0)
