@@ -31,4 +31,4 @@ class ValidatorEfficiencyCheck(AgentCheck, EnvEnrichedConsumer):
             self.send_gauge('ton.validator.efficiency', toncore.GetValidatorEfficiency(adnlAddr=toncore.adnlAddr))
             self.send_gauge('ton.validator.index', toncore.GetValidatorIndex(adnlAddr=toncore.adnlAddr))
         else:
-            self.send_gauge(100.0)
+            self.send_gauge('ton.validator.efficiency', 100.0)
