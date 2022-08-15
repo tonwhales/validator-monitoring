@@ -27,8 +27,8 @@ class ValidatorEfficiencyCheck(AgentCheck, EnvEnrichedConsumer):
         toncore = mytonctrl.MyTonCore()
         toncore.liteClient.configPath = "/usr/src/validator-monitoring/local.config.json"
         mytoncore.local.db["liteServers"] = [0]
-        if len(list(filter(lambda v: v["adnlAddr"] == toncore.adnlAddr, toncore.GetConfig34()["validators"]))) != 0:
-            self.send_gauge('ton.validator.efficiency', toncore.GetValidatorEfficiency(adnlAddr=toncore.adnlAddr))
-            self.send_gauge('ton.validator.index', toncore.GetValidatorIndex(adnlAddr=toncore.adnlAddr))
+        if len(list(filter(lambda v: v["adnlAddr"] == toncore.GetAdnlAddr(), toncore.GetConfig34()["validators"]))) != 0:
+            self.send_gauge('ton.validator.efficiency', toncore.GetValidatorEfficiency(adnlAddr=toncore.GetAdnlAddr()))
+            self.send_gauge('ton.validator.index', toncore.GetValidatorIndex(adnlAddr=toncore.GetAdnlAddr()))
         else:
             self.send_gauge('ton.validator.efficiency', 100.0)
