@@ -55,7 +55,7 @@ RELEASE_VERSION=$(basename $(curl -Ls -o /dev/null https://github.com/grafana/ag
 RELEASE_URL="https://github.com/grafana/agent/releases/download/v${RELEASE_VERSION}"
 DEB_URL="${RELEASE_URL}/grafana-agent-${RELEASE_VERSION}-1.${ARCH}.deb"
 curl -fL# "${DEB_URL}" -o /tmp/grafana-agent.deb || fatal 'Failed to download package'
-dpkg -i /tmp/grafana-agent.deb
+dpkg --force-confold -i /tmp/grafana-agent.deb
 rm /tmp/grafana-agent.deb
 
 wget -O /etc/systemd/system/ton-exporter.service $REPO_PREFIX/ton-exporter.service
