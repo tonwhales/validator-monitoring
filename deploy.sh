@@ -60,6 +60,7 @@ rm /tmp/grafana-agent.deb
 
 wget -O /etc/systemd/system/ton-exporter.service $REPO_PREFIX/ton-exporter.service
 wget -O /usr/src/validator-monitoring/ton-exporter.py $REPO_PREFIX/ton-exporter.py
+wget -O /etc/grafana-agent.yaml $REPO_PREFIX/grafana-agent.yaml
 
 systemctl daemon-reload
 systemctl enable ton-exporter
