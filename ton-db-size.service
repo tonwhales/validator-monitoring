@@ -1,9 +1,0 @@
-[Unit]
-Description=Daemon that tells database size of ton node
-
-[Service]
-User=validator
-ExecStart=/usr/bin/python3 /usr/src/validator-monitoring/ton_db_size.py
-
-[Install]
-WantedBy=multi-user.target

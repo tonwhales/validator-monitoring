@@ -7,19 +7,19 @@ ROOT_HASH_TO_ENV = {
 }
 LOCAL_CONFIG_PATH = "/usr/src/validator-monitoring/local.config.json"
 
-class EnvEnrichedConsumer():
-    def get_environment(self):
-        with open(LOCAL_CONFIG_PATH) as f:
-            config = json.load(f)
-            root_hash = config["validator"]["zero_state"]["root_hash"]
-            return ROOT_HASH_TO_ENV.get(root_hash, "env_not_known")
+def get_environment():
+    with open(LOCAL_CONFIG_PATH) as f:
+        config = json.load(f)
+        root_hash = config["validator"]["zero_state"]["root_hash"]
+        return ROOT_HASH_TO_ENV.get(root_hash, "env_not_known")
 
-    
+
+class EnvEnrichedConsumer():
     def get_plain_tags(self):
         return ['SERVICE:ton'] + self.instance.get('tags', [])
 
     def get_tags(self):
-        tags = ['SERVICE:ton', 'ENVIRONMENT:{}'.format(self.get_environment())]
+        tags = ['SERVICE:ton', 'ENVIRONMENT:{}'.format(get_environment())]
         return tags + self.instance.get('tags', [])
 
 

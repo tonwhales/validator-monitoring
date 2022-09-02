@@ -1,0 +1,38 @@
+server:
+  log_level: debug
+integrations:
+  agent:
+    enabled: true
+    relabel_configs:
+    - action: replace
+      source_labels:
+      - agent_hostname
+      target_label: instance
+  node_exporter:
+    enabled: true
+    relabel_configs:
+    - replacement: hostname
+      target_label: instance
+  prometheus_remote_write:
+  - basic_auth:
+      password: ${PASSWORD}
+      username: ${USERNAME}
+    url: ${REMOTE_WRITE_URL}
+metrics:
+  configs:
+  - name: integrations
+    scrape_configs:
+      - job_name: 'ton_decentralized_exporter'
+        static_configs:
+        - targets: ['localhost:8000']
+    remote_write:
+    - basic_auth:
+        password: ${PASSWORD}
+        username: ${USERNAME}
+      url: ${REMOTE_WRITE_URL}
+  global:
+    external_labels:
+      environment: ${ENVIRONMENT}
+      role: ${ROLE}
+    scrape_interval: 15s
+  wal_directory: /tmp/grafana-agent-wal

@@ -1,0 +1,8 @@
+[Unit]
+Description=Prometheus-compatible TON metrics exporter
+
+[Service]
+ExecStart=/usr/bin/python3 /usr/src/validator-monitoring/ton-exporter.py
+
+[Install]
+WantedBy=multi-user.target
