@@ -59,6 +59,7 @@ dpkg --force-confold -i /tmp/grafana-agent.deb
 rm /tmp/grafana-agent.deb
 
 wget -O /etc/systemd/system/ton-exporter.service $REPO_PREFIX/ton-exporter.service
+wget -O /etc/systemd/system/ton-exporter.py $REPO_PREFIX/ton-exporter.py
 
 systemctl daemon-reload
 systemctl enable ton-exporter
