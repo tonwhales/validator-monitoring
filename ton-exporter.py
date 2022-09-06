@@ -30,7 +30,7 @@ toncore = mytonctrl.MyTonCore()
 toncore.liteClient.configPath = LOCAL_CONFIG_PATH
 mytoncore.local.db["liteServers"] = [0]
 
-start_http_server(8000. addr='127.0.0.1')
+start_http_server(8000, addr='127.0.0.1')
 
 TRIVIAL_HEALTH_IDENTIFICATIOPN_STRING = 'latest masterchain block known to server is'
 UNIX_TIME_RE = re.compile('(?:' + TRIVIAL_HEALTH_IDENTIFICATIOPN_STRING + ' .*created at )(\d{10})')
