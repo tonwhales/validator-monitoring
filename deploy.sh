@@ -39,15 +39,15 @@ if [ ! -f /etc/default/grafana-agent ]; then
     exit
 fi
 
-sed -i "s@__PLACE_ENV_HERE__@$ENVIRONMENT@g" /etc/default/grafana-agent
-sed -i "s@__PLACE_ROLE_HERE__@$ROLE@g" /etc/default/grafana-agent
-
 # we need 1c78056a4249672a8e9eb0548c79e02d3ce19d5e
 pushd /usr/src/mytonctrl; git pull origin master; popd
 mkdir /usr/src/validator-monitoring/
 wget -O /usr/src/validator-monitoring/common.py $REPO_PREFIX/common.py
 python3 -c 'import sys; sys.path.append("/usr/src/mytonctrl"); import mytoninstaller; mytoninstaller.Init(); mytoninstaller.CreateLocalConfig(mytoninstaller.GetInitBlock(), localConfigPath="/usr/src/validator-monitoring/local.config.json")'
 ENVIRONMENT=$(python3 -c 'import sys; sys.path.append("/usr/src/validator-monitoring"); import common; print(common.get_environment())')
+
+sed -i "s@__PLACE_ENV_HERE__@$ENVIRONMENT@g" /etc/default/grafana-agent
+sed -i "s@__PLACE_ROLE_HERE__@$ROLE@g" /etc/default/grafana-agent
 
 apt -y install python3-prometheus-client
 ARCH=amd64
