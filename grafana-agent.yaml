@@ -13,6 +13,18 @@ integrations:
     relabel_configs:
     - replacement: ${HOSTNAME}
       target_label: instance
+    enable_collectors:
+    - systemd
+    systemd_unit_include: validator.service
+  process_exporter:
+    enabled: true
+    relabel_configs:
+    - replacement: ${HOSTNAME}
+      target_label: instance
+    process_names:
+    - name: validator-engine
+      cmdline:
+      - /usr/bin/ton/validator-engine/validator-engine
   prometheus_remote_write:
   - basic_auth:
       password: ${PASSWORD}
