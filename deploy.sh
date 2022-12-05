@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eux -o pipefail
+
 # call example: curl https://raw.githubusercontent.com/tonwhales/validator-monitoring/main/deploy.sh | bash -x -- --role validator
 
 containsElement () {
