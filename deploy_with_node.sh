@@ -3,11 +3,17 @@
 set -eux -o pipefail
 
 SECRET=""
+HOST_NAME=""
 
 while [[ $# -gt 0 ]]; do
   case $1 in
     --secret)
       SECRET="$2"
+      shift
+      shift
+      ;;
+    --hostname)
+      HOST_NAME="$2"
       shift
       shift
       ;;
@@ -22,7 +28,10 @@ if [[ -z "${SECRET// }" ]]; then
     echo "Secret variable cannot be empty."
     exit 1
 fi
-
+if [[ -z "${HOST_NAME// }" ]]; then
+    echo "Secret variable cannot be empty."
+    exit 1
+fi
 if [ "$EUID" -ne 0 ]
   then echo "This script must be run as root"
   exit 1
@@ -36,6 +45,7 @@ READ_IOPS_PREQUIRED=700
 WRITE_IOPS_REQUIRED=200
 HT_REQUIRED=8
 MEM_REQUIRED=63   # rounding error must be tolerated
+SPACE_REQUIRED=800
 ERROR_COMMON_MESSAGE="Validator engine cannot effectively work on"
 OVERALL_THREADS=$(lscpu --json | jq '(.lscpu[] | select(.field=="CPU(s):") | .data | tonumber) * (.lscpu[] | select(.field=="Thread(s) per core:") | .data | tonumber)')
 if [ $OVERALL_THREADS -lt $HT_REQUIRED ]; then
@@ -48,6 +58,7 @@ if [ $OVERALL_MEM -lt $MEM_REQUIRED ]; then
     exit 1
 fi
 BENCH_RESULT=$(fio --randrepeat=1 --ioengine=libaio --direct=1 --gtod_reduce=1 --name=test --filename=test --bs=1M --iodepth=$OVERALL_THREADS --size=4G --readwrite=randrw --rwmixread=75  --output-format=json | jq '.jobs[] | {write: .write.iops | round, read: .read.iops | round}')
+rm -f test
 READ_IOPS=$(echo $BENCH_RESULT | jq '.read')
 WRITE_IOPS=$(echo $BENCH_RESULT | jq '.write')
 if [ $READ_IOPS -lt $READ_IOPS_PREQUIRED ]; then
@@ -63,6 +74,22 @@ if [ $(grep PermitRootLogin /etc/ssh/sshd_config | grep yes | wc -l) -ne 0 ]; th
     echo "Secyrity policies does not allow sshd with pwauth enabled. Please disable it anr restart sshd resrvice to apply new config."
     exit 1
 fi
+
+if [ $(grep $HOST_NAME /etc/hostname | wc -l) -lt 1 ]; then
+    echo "Please adjust your hostname to match $HOST_NAME"
+    exit 1
+fi
+if [ $(grep $HOST_NAME /etc/hosts | wc -l) -lt 1 ]; then
+    echo "Please adjust your /etc/hosts so at least one record matches $HOST_NAME"
+    exit 1
+fi
+
+FREE_ON_VAR=$(df | grep $(findmnt -n -o SOURCE --target /var) |  awk '{print $4}' | numfmt --from-unit=Ki --to-unit=Gi)
+if [ $FREE_ON_VAR -le $SPACE_REQUIRED ]; then
+    echo "Mountpoint /var has only $FREE_ON_VAR Gb, but validator requires at least $SPACE_REQUIRED Gb."
+    exit 1
+fi
+
 
 
 # Install validator and configure it
