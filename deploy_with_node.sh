@@ -93,22 +93,23 @@ fi
 
 
 # Install validator and configure it
-curl https://raw.githubusercontent.com/ton-blockchain/mytonctrl/master/scripts/install.sh | bash -eux -s -- -t -m full
+wget https://raw.githubusercontent.com/ton-blockchain/mytonctrl/master/scripts/install.sh
+bash -eux install.sh -m full -d
 systemctl stop validator
 systemctl stop mytoncore
-sed -i "s@--state-ttl 604800 --archive-ttl 1209600 --verbosity 1@--state-ttl 259200 --archive-ttl 604800 --verbosity 3@"
+echo "/usr/bin/ton/validator-engine/validator-engine --threads $OVERALL_THREADS --daemonize --global-config /usr/bin/ton/global.config.json --db /var/ton-work/db/ --logname /var/ton-work/log --state-ttl 259200 --archive-ttl 604800 --verbosity 3" > /etc/systemd/system/validator.service
 systemctl daemon-reload
-apt -y install plzip jq vim
-mv /var/ton-work/db /var/ton-work/db-old
-wget -q --show-progress https://dump.ton.org/dumps/latest.tar.lz
-sudo mkdir /var/ton-work/db
-mv latest.tar.lz /var/ton-work/db/
-cd /var/ton-work/db/
-plzip -cd latest.tar.lz | tar -xf -
-cp -r /var/ton-work/db-old/keyring /var/ton-work/db/
-cp /var/ton-work/db-old/config.json /var/ton-work/db/
-rm latest.tar.lz
-sudo chown -R validator:validator .
+# apt -y install plzip jq vim
+# mv /var/ton-work/db /var/ton-work/db-old
+# wget -q --show-progress https://dump.ton.org/dumps/latest.tar.lz
+# sudo mkdir /var/ton-work/db
+# mv latest.tar.lz /var/ton-work/db/
+# cd /var/ton-work/db/
+# plzip -cd latest.tar.lz | tar -xf -
+# cp -r /var/ton-work/db-old/keyring /var/ton-work/db/
+# cp /var/ton-work/db-old/config.json /var/ton-work/db/
+# rm latest.tar.lz
+# sudo chown -R validator:validator .
 systemctl start validator
 systemctl start mytoncore
 sleep 50
@@ -119,9 +120,9 @@ done
 
 
 # Setup minotorings
-mkdir -p /etc/etcd-registrar/; echo $SECRET | base64 -d |  openssl zlib -d | jq ".etcd_config" -r | base64 -d > /etc/etcd-registrar/config.secrets
-echo $SECRET | base64 -d |  openssl zlib -d | jq ".grafana_agent_config" -r | base64 -d > /etc/default/grafana-agent
-curl https://raw.githubusercontent.com/tonwhales/validator-monitoring/grafana/deploy.sh  | bash -eux -s -- --role validator
+mkdir -p /etc/etcd-registrar/; echo $SECRET | base64 -d | gunzip | jq ".etcd_config" -r | base64 -d > /etc/etcd-registrar/config.secrets
+echo $SECRET | base64 -d | gunzip | jq ".grafana_agent_config" -r | base64 -d > /etc/default/grafana-agent
+curl https://raw.githubusercontent.com/tonwhales/validator-monitoring/grafana/deploy.sh | bash -eux -s -- --role validator
 apt install -y vim jq
 echo "Copy this text and send it back to whales:"
-echo -en '        {\n            "clientSecret": "'; base64 /var/ton-work/keys/client | tr -d "\n"; echo -en '",\n            "serverPublic": "'; base64 /var/ton-work/keys/server.pub | tr -d "\n"; echo -en '",\n            "endpoint": "'; ip a | grep "/32" | sed "s@    inet @@g" | sed "s@/32 scope.*@@g" | tr -d "\n"; echo -n ":"; jq -r ".control | .[].port" /var/ton-work/db/config.json | tr -d "\n"; echo -en '",\n            "adnl": "'; mytonctrl <<< status 2>&1 | grep -v "\[debug\]\|\[warning\]\|\[info\]\|Welcome to the console\|Bye" | grep "ADNL address of local validator" | sed "s@ADNL address of local validator: @@g"| tr -d "\n" ; echo -e '"\n        }'
+echo -en '        {\n            "clientSecret": "'; base64 /var/ton-work/keys/client | tr -d "\n"; echo -en '",\n            "serverPublic": "'; base64 /var/ton-work/keys/server.pub | tr -d "\n"; echo -en '",\n            "endpoint": "'; ip a | grep "/32" | sed "s@    inet @@g" | sed "s@/32 scope.*@@g" | tr -d "\n"; echo -n ":"; jq -r ".control | .[].port" /var/ton-work/db/config.json | tr -d "\n"; echo -en '",\n            "adnl": "'; mytonctrl <<< status 2>&1 | grep -v "\[debug\]\|\[warning\]\|\[info\]\|Welcome to the console\|Bye" | grep "ADNL address of local validator" | sed "s@ADNL address of local validator: @@g"| tr -d "\n" | sed -e 's/\x1b\[[0-9;]*m//g' ; echo -e '"\n        }'
