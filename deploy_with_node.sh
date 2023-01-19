@@ -41,8 +41,8 @@ fi
 
 # Check HW suitability
 apt install -y fio jq
-READ_IOPS_PREQUIRED=700
-WRITE_IOPS_REQUIRED=200
+READ_IOPS_PREQUIRED=150
+WRITE_IOPS_REQUIRED=60
 HT_REQUIRED=8
 MEM_REQUIRED=63   # rounding error must be tolerated
 SPACE_REQUIRED=800
