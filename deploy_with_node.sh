@@ -97,7 +97,26 @@ wget https://raw.githubusercontent.com/ton-blockchain/mytonctrl/master/scripts/i
 bash -eux install.sh -m full -d
 systemctl stop validator
 systemctl stop mytoncore
-echo "/usr/bin/ton/validator-engine/validator-engine --threads $OVERALL_THREADS --daemonize --global-config /usr/bin/ton/global.config.json --db /var/ton-work/db/ --logname /var/ton-work/log --state-ttl 259200 --archive-ttl 604800 --verbosity 3" > /etc/systemd/system/validator.service
+tee /etc/systemd/system/validator.service << EndOfMessage
+[Unit]
+Description = validator service. Created by https://github.com/igroman787/mypylib.
+After = network.target
+
+[Service]
+Type = simple
+Restart = always
+RestartSec = 30
+ExecStart = /usr/bin/ton/validator-engine/validator-engine --threads $OVERALL_THREADS --daemonize --global-config /usr/bin/ton/global.config.json --db /var/ton-work/db/ --logname /var/ton-work/log --state-ttl 259200 --archive-ttl 604800 --verbosity 3
+ExecStopPost = /bin/echo service down
+User = validator
+Group = validator
+LimitNOFILE = infinity
+LimitNPROC = infinity
+LimitMEMLOCK = infinity
+
+[Install]
+WantedBy = multi-user.target
+EndOfMessage
 systemctl daemon-reload
 # apt -y install plzip jq vim
 # mv /var/ton-work/db /var/ton-work/db-old
