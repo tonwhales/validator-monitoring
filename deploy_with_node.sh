@@ -46,7 +46,7 @@ READ_IOPS_PREQUIRED=150
 WRITE_IOPS_REQUIRED=60
 HT_REQUIRED=8
 MEM_REQUIRED=61   # rounding error must be tolerated
-SPACE_REQUIRED=800
+SPACE_REQUIRED=400
 ERROR_COMMON_MESSAGE="Validator engine cannot effectively work on"
 OVERALL_THREADS=$(lscpu --json | jq '(.lscpu[] | select(.field=="CPU(s):") | .data | tonumber) * (.lscpu[] | select(.field=="Thread(s) per core:") | .data | tonumber)')
 if [ $OVERALL_THREADS -lt $HT_REQUIRED ]; then
