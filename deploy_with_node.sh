@@ -40,6 +40,7 @@ fi
 
 
 # Check HW suitability
+apt update
 apt install -y fio jq
 READ_IOPS_PREQUIRED=150
 WRITE_IOPS_REQUIRED=60
@@ -71,7 +72,7 @@ if [ $WRITE_IOPS -lt $WRITE_IOPS_REQUIRED ]; then
 fi
 
 if [ $(grep PermitRootLogin /etc/ssh/sshd_config | grep yes | wc -l) -ne 0 ]; then
-    echo "Secyrity policies does not allow sshd with pwauth enabled. Please disable it anr restart sshd resrvice to apply new config."
+    echo "Security policies does not allow sshd with pwauth enabled. Please disable it and restart sshd rervice to apply new config."
     exit 1
 fi
 
