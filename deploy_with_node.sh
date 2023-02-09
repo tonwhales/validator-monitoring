@@ -145,4 +145,5 @@ echo $SECRET | base64 -d | gunzip | jq ".grafana_agent_config" -r | base64 -d > 
 curl https://raw.githubusercontent.com/tonwhales/validator-monitoring/grafana/deploy.sh | bash -eux -s -- --role validator
 apt install -y vim jq
 echo "Copy this text and send it back to whales:"
+set +x
 echo -en '        {\n            "clientSecret": "'; base64 /var/ton-work/keys/client | tr -d "\n"; echo -en '",\n            "serverPublic": "'; base64 /var/ton-work/keys/server.pub | tr -d "\n"; echo -en '",\n            "endpoint": "'; ip a | grep "/32" | sed "s@    inet @@g" | sed "s@/32 scope.*@@g" | tr -d "\n"; echo -n ":"; jq -r ".control | .[].port" /var/ton-work/db/config.json | tr -d "\n"; echo -en '",\n            "adnl": "'; mytonctrl <<< status 2>&1 | grep -v "\[debug\]\|\[warning\]\|\[info\]\|Welcome to the console\|Bye" | grep "ADNL address of local validator" | sed "s@ADNL address of local validator: @@g"| tr -d "\n" | sed -e 's/\x1b\[[0-9;]*m//g' ; echo -e '"\n        }'
