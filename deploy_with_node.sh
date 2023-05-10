@@ -142,7 +142,7 @@ done
 # Setup minotorings
 mkdir -p /etc/etcd-registrar/; echo $SECRET | base64 -d | gunzip | jq ".etcd_config" -r | base64 -d > /etc/etcd-registrar/config.secrets
 echo $SECRET | base64 -d | gunzip | jq ".grafana_agent_config" -r | base64 -d > /etc/default/grafana-agent
-curl https://raw.githubusercontent.com/tonwhales/validator-monitoring/grafana/deploy.sh | bash -eux -s -- --role validator
+curl https://raw.githubusercontent.com/tonwhales/validator-monitoring/master/deploy.sh | bash -eux -s -- --role validator
 apt install -y vim jq
 echo "Copy this text and send it back to whales:"
 set +x

@@ -34,7 +34,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-REPO_PREFIX=https://raw.githubusercontent.com/tonwhales/validator-monitoring/grafana
+REPO_PREFIX=https://raw.githubusercontent.com/tonwhales/validator-monitoring/master
 
 if [ ! -f /etc/default/grafana-agent ]; then
     echo "Please, deploy params first!"
