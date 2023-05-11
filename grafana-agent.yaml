@@ -45,6 +45,14 @@ metrics:
       write_relabel_configs:
       - replacement: ${HOSTNAME}
         target_label: instance
+    - basic_auth:
+        password: ${PASSWORD}
+        username: ${USERNAME}
+      url: ${REMOTE_WRITE_URL_2}
+      write_relabel_configs:
+      - replacement: ${HOSTNAME}
+        target_label: instance
+
   global:
     external_labels:
       environment: ${ENVIRONMENT}
