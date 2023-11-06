@@ -30,6 +30,10 @@ integrations:
       password: ${PASSWORD}
       username: ${USERNAME}
     url: ${REMOTE_WRITE_URL}
+  - basic_auth:
+      password: ${PASSWORD}
+      username: ${USERNAME}
+    url: ${REMOTE_WRITE_URL_2}
 metrics:
   configs:
   - name: integrations
