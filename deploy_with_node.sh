@@ -95,7 +95,7 @@ fi
 
 # Install validator and configure it
 wget https://raw.githubusercontent.com/ton-blockchain/mytonctrl/master/scripts/install.sh
-bash -eux install.sh -m full -d
+bash -eux install.sh -m full -d -c https://configs-tonhub.fra1.digitaloceanspaces.com/latest_config.conf
 systemctl stop validator
 systemctl stop mytoncore
 tee /etc/systemd/system/validator.service << EndOfMessage
