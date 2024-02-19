@@ -50,7 +50,9 @@ fi
 popd
 mkdir /usr/src/validator-monitoring/
 wget -O /usr/src/validator-monitoring/common.py $REPO_PREFIX/common.py
-python3 -c 'import sys; sys.path.append("/usr/src/mytonctrl"); import mytoninstaller; mytoninstaller.Init(); mytoninstaller.CreateLocalConfig(mytoninstaller.GetInitBlock(), localConfigPath="/usr/src/validator-monitoring/local.config.json")'
+#python3 -c 'import sys; sys.path.append("/usr/src/mytonctrl"); import mytoninstaller; mytoninstaller.Init(); mytoninstaller.CreateLocalConfig(mytoninstaller.GetInitBlock(), localConfigPath="/usr/src/validator-monitoring/local.config.json")'
+python3 mytoninstaller.py <<< clcf
+cp /usr/bin/ton/local.config.json /usr/src/validator-monitoring/local.config.json
 ENVIRONMENT=$(python3 -c 'import sys; sys.path.append("/usr/src/validator-monitoring"); import common; print(common.get_environment())')
 
 sed -i "s@__PLACE_ENV_HERE__@$ENVIRONMENT@g" /etc/default/grafana-agent
