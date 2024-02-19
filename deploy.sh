@@ -42,7 +42,12 @@ if [ ! -f /etc/default/grafana-agent ]; then
 fi
 
 # we need 1c78056a4249672a8e9eb0548c79e02d3ce19d5e
-pushd /usr/src/mytonctrl; git pull origin master; popd
+pushd /usr/src/mytonctrl
+if ! git cat-file -e 1c78056a4249672a8e9eb0548c79e02d3ce19d5e; then
+    echo "mytonctrl must have commit with id 1c78056a4249672a8e9eb0548c79e02d3ce19d5e for this script to work properly"
+    exit
+fi
+popd
 mkdir /usr/src/validator-monitoring/
 wget -O /usr/src/validator-monitoring/common.py $REPO_PREFIX/common.py
 python3 -c 'import sys; sys.path.append("/usr/src/mytonctrl"); import mytoninstaller; mytoninstaller.Init(); mytoninstaller.CreateLocalConfig(mytoninstaller.GetInitBlock(), localConfigPath="/usr/src/validator-monitoring/local.config.json")'
