@@ -55,11 +55,11 @@ pushd /usr/src/mytonctrl/
 BRANCH=$(git branch --show-current)
 case BRANCH in
 
-  master)
+  "master")
     python3 /usr/src/mytonctrl/mytoninstaller.py <<< clcf
     ;;
 
-  mytonctrl2)
+  "mytonctrl2")
     python3 -m mytoninstaller <<< clcf
     ;;
 
