@@ -56,9 +56,6 @@ BRANCH=$(git branch --show-current)
 case $BRANCH in
 
   "master")
-    python3 /usr/src/mytonctrl/mytoninstaller.py <<< clcf;;
-
-  "mytonctrl2")
     python3 -m mytoninstaller <<< clcf;;
 
   *)
