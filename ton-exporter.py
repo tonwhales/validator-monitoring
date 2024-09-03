@@ -9,11 +9,10 @@ import logging
 import os
 import re
 import sys
-sys.path.append("/usr/src/mytonctrl")
 sys.path.append("/usr/src/validator-monitoring")
 from common import get_environment, LOCAL_CONFIG_PATH
-import mytonctrl
-import mytoncore
+from mytoncore.mytoncore import MyTonCore
+from mypylib.mypylib import MyPyClass
 from time import sleep
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
@@ -23,12 +22,12 @@ REGISTRY.unregister(PROCESS_COLLECTOR)
 REGISTRY.unregister(PLATFORM_COLLECTOR)
 REGISTRY.unregister(REGISTRY._names_to_collectors['python_gc_objects_collected_total'])
 
-mytoncore.local.buffer["localdbFileName"] = "/usr/local/bin/mytoncore/mytoncore.db"
-mytoncore.local.db["config"]["logLevel"] = "error"
-mytoncore.local.db["config"]["isIgnorLogWarning"] = True
-toncore = mytonctrl.MyTonCore()
+mytoncore_local = MyPyClass('mytoncore.py')
+toncore = MyTonCore(mytoncore_local)
+toncore.local.db.config.logLevel = "error"
+toncore.local.db.config.isIgnorLogWarning = True
 toncore.liteClient.configPath = LOCAL_CONFIG_PATH
-mytoncore.local.db["liteServers"] = [0]
+toncore.local.db.liteServers = [0]
 
 start_http_server(8000, addr='127.0.0.1')
 
@@ -43,7 +42,7 @@ def process_logs():
     module = inspect.getmodule(parentframe)
     metric_name = getattr(module, parentframe.f_code.co_name).__doc__
     logging.info("Running %s check.", metric_name)
-    mytoncore.local.db["config"]["logLevel"] = "info"
+    toncore.local.db.config.logLevel = "info"
 
 def efficiency(q, tonc):
     '''ton_validator_efficiency'''
@@ -156,16 +155,13 @@ while True:
     process_data = {}
     for metric_func in METRIC_FUNCS:
         queue = Queue()
-        tf = tempfile.NamedTemporaryFile()
-        mytoncore.local.buffer["logFileName"] = tf.name
         p = Process(target=metric_func, args=(queue, toncore))
         p.start()
-        process_data[p] = {"queue": queue, "metric_name": metric_func.__doc__, "log_file": tf.name}
+        process_data[p] = {"queue": queue, "metric_name": metric_func.__doc__}
         #process_to_queue_and_metric_name[p] = (queue, metric_func.__doc__)
     for p, data in process_data.items():
         queue = data["queue"]
         metric_name = data["metric_name"]
-        log_file = data["log_file"]
         #queue, metric_name = queue_and_metric_name
         p.join(timeout=60)
         if p.exitcode == 0:
@@ -184,5 +180,4 @@ while True:
             logging.info("Check %s got non-zero exit code. Probably exception occured.  Valishing from registry.", metric_name)
             unregister_if_exists(metric_name)
         # by default the temporary file is deleted as soon as it is closed
-        #os.unlink(log_file)
     sleep(COLLECTION_INTERVAL)
