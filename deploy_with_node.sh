@@ -133,7 +133,7 @@ systemctl daemon-reload
 systemctl start validator
 systemctl start mytoncore
 sleep 50
-while [ $(python3 -c 'import sys; sys.path.append("/usr/src/mytonctrl"); import mytoncore; c = 1000; c = mytoncore.MyTonCore().GetValidatorStatus().get("outOfSync"); print(c)') -gt 10 ]; do
+while [ $(mytonctrl <<< status | grep "Local validator initial sync status\|Local validator out of sync" | `# remove ansi color` sed -e 's/\x1b\[[0-9;]*m//g' | grep -o "[[:digit:]]*") -gt 10 ]; do
     sleep 10
     echo "wating full sync..."
 done
