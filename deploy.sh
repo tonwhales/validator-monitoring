@@ -89,20 +89,3 @@ systemctl restart ton-exporter
 systemctl enable grafana-agent
 systemctl start grafana-agent
 systemctl restart grafana-agent
-
-if [ "$ROLE" == ${ROLES[validator]} ]; then
-    mkdir -p /etc/etcd-registrar/
-    wget -O /etc/etcd-registrar/config.values $REPO_PREFIX/config.values
-    apt -y install jq
-    PORT=$(jq ".control | .[].port" /var/ton-work/db/config.json)
-    sed -i "s@__PLACE_PORT_HERE__@$PORT@g" /etc/etcd-registrar/config.values
-    sed -i "s@__PLACE_ENV_HERE__@$ENVIRONMENT@g" /etc/etcd-registrar/config.values
-    if [ ! -f /etc/etcd-registrar/config.secrets ]; then
-        echo "PLEASE, DEPLOY SECRETS FIRST!"
-        exit 1
-    fi
-    apt install -y software-properties-common
-    add-apt-repository --yes ppa:yma-het/etcd-client
-    apt install -y etcd-registrar
-
-fi
